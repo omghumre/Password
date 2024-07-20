@@ -7,28 +7,32 @@ const numbersCheckbox = document.getElementById('numbers');
 const symbolsCheckbox = document.getElementById('symbols');
 const generateBtn = document.getElementById('generateBtn');
 const copyBtn = document.getElementById('copyBtn');
-const themeSwitcher = document.getElementById('themeSwitcher');
-const title = document.getElementById('title');
+const tooltip = document.getElementById('tooltip');
+const strengthValue = document.getElementById('strengthValue');
+const themeToggle = document.getElementById('themeToggle');
 
 const UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
 const NUMBERS = '0123456789';
 const SYMBOLS = '!@#$%^&*()_+~`|}{[]:;?><,./-=';
 
-let isDarkMode = true;
-
 lengthSlider.addEventListener('input', () => {
     lengthValue.textContent = lengthSlider.value;
 });
 
-generateBtn.addEventListener('click', generatePassword);
+generateBtn.addEventListener('click', () => {
+    const password = generatePassword();
+    passwordDisplay.value = password;
+    updateStrength(password);
+});
 
 copyBtn.addEventListener('click', () => {
     passwordDisplay.select();
     document.execCommand('copy');
+    showTooltip();
 });
 
-themeSwitcher.addEventListener('click', switchTheme);
+themeToggle.addEventListener('click', toggleTheme);
 
 function generatePassword() {
     let length = lengthSlider.value;
@@ -42,7 +46,7 @@ function generatePassword() {
 
     if (charset === '') {
         alert('Please select at least one condition!');
-        return;
+        return '';
     }
 
     for (let i = 0; i < length; i++) {
@@ -50,28 +54,33 @@ function generatePassword() {
         password += charset[randomIndex];
     }
 
-    passwordDisplay.value = password;
+    return password;
 }
 
-function switchTheme() {
-    isDarkMode = !isDarkMode;
-    document.body.classList.toggle('dark-mode', isDarkMode);
-    document.body.classList.toggle('light-mode', !isDarkMode);
-    document.querySelector('.card').classList.toggle('dark-mode', isDarkMode);
-    document.querySelector('.card').classList.toggle('light-mode', !isDarkMode);
-    passwordDisplay.classList.toggle('dark-mode', isDarkMode);
-    passwordDisplay.classList.toggle('light-mode', !isDarkMode);
-    themeSwitcher.textContent = isDarkMode ? 'brightness_4' : 'brightness_7';
+function updateStrength(password) {
+    let strength = 'Weak';
+    if (password.length >= 12 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password) && /\W/.test(password)) {
+        strength = 'Strong';
+    } else if (password.length >= 8 && (/[A-Z]/.test(password) || /[a-z]/.test(password)) && (/\d/.test(password) || /\W/.test(password))) {
+        strength = 'Moderate';
+    }
+    strengthValue.textContent = strength;
 }
 
-const checkboxes = document.querySelectorAll('.form-check-input');
+function showTooltip() {
+    tooltip.style.opacity = 1;
+    setTimeout(() => {
+        tooltip.style.opacity = 0;
+    }, 1000);
+}
 
-checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', (event) => {
-        if (event.target.checked) {
-            event.target.parentNode.classList.add('glow');
-        } else {
-            event.target.parentNode.classList.remove('glow');
-        }
-    });
-});
+function toggleTheme() {
+    if (document.body.hasAttribute('data-theme')) {
+        document.body.removeAttribute('data-theme');
+        themeToggle.textContent = '🌙'; // Dark mode icon
+    } else {
+        document.body.setAttribute('data-theme', 'light');
+        themeToggle.textContent = '🌞'; // Light mode icon
+    }
+}
+
