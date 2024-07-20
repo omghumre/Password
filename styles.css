@@ -10,8 +10,6 @@ body {
 }
 
 .container {
-    width: 100vh;
-    position: absolute;
     background-color: #333;
     padding: 20px;
     border-radius: 10px;
@@ -52,16 +50,32 @@ h1 {
     margin-bottom: 20px;
 }
 
-.customize-password label,
-.customize-password input {
+.slider-container {
     display: flex;
-    flex-direction: column;
-    /* margin: 10px 0; */
+    align-items: center;
+    margin: 10px 0;
 }
 
-.conditions label{
+.slider-container label {
+    margin-right: 10px;
+}
+
+#length {
+    margin-right: 10px;
+}
+
+.conditions {
+    margin-top: 10px;
+}
+
+.conditions label {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.conditions label input {
+    margin-right: 10px;
 }
 
 #generateBtn {
@@ -74,6 +88,5 @@ h1 {
 }
 
 #lengthValue {
-    display: inline-block;
     width: 30px;
 }
